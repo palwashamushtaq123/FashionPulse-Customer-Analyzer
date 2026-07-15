@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import gspread
 from google.oauth2.service_account import Credentials
 st.title('FashionPulse_Customer Taste Analyzer')
@@ -6,7 +7,19 @@ scope = [
     "https://spreadsheets.google.com/feeds",
     "https://www.googleapis.com/auth/drive"
 ]
-creds = Credentials.from_service_account_file(r'credentials.json.json', scopes=scope)
+
+
+if os.path.exists("credentials.json.json"):
+    creds = Credentials.from_service_account_file(
+        "credentials.json.json",
+        scopes=scope
+    )
+else:
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
+    )
+# creds = Credentials.from_service_account_file(r'credentials.json.json', scopes=scope)
 client = gspread.authorize(creds)
 sheet = client.open("FashionPulse_Data").sheet1
 
